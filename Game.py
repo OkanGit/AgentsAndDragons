@@ -28,10 +28,10 @@ class Player:
         return self.hp > 0
     
     def defend(self):
-        if self.is_defending:
-            self.is_defending = False
-        else:
-            self.is_defending = True
+        self.is_defending = True
+    
+    def removeDefense(self):
+        self.is_defending = False
 
 
 class Monster:
@@ -65,10 +65,11 @@ class Battle:
     def __init__(self, players, monster) -> None:
         self.players = players
         self.monster = monster
-        print(f"A {self.monster.name} draws near! What will you do? (attack/defend/item): ")
+        print(f"A {self.monster.name} draws near!")
         self.battlePrint = ""
-        self.battlePrint = self.battlePrint + f"A {self.monster.name} draws near! What will you do? (attack/defend/item): "
+        self.battlePrint = self.battlePrint + f"A {self.monster.name} draws near!"
         self.battleState()
+        self.is_over = False
         pass
 
     def battleState(self):
@@ -76,7 +77,6 @@ class Battle:
         for player in self.players:
             if not player.is_alive():
                 continue
-            player.defend()
             print(f"\n{player.name}'s HP: {player.hp}/{player.max_hp} | MP: {player.mp}/{player.max_mp}")
             self.battlePrint = self.battlePrint + f"\n{player.name}'s HP: {player.hp}/{player.max_hp} | MP: {player.mp}/{player.max_mp}"
         print(f"\n{self.monster.name}'s HP: {self.monster.hp}/{self.monster.max_hp}\n")
@@ -85,60 +85,66 @@ class Battle:
         if not self.monster.is_alive():
             print(f"\nVictory! {', '.join(player.name for player in self.players)} defeated {self.monster.name}!")
             self.battlePrint = self.battlePrint + f"\nVictory! {', '.join(player.name for player in self.players)} defeated {self.monster.name}!"
+            self.is_over = True
         elif all(not player.is_alive for player in self.players):
             print("Defeat! Every party member has died!")
             self.battlePrint = self.battlePrint + "Defeat! Every party member has died!"
+            self.is_over = True
         else:
             print("What will you do? (attack/defend/item): ")
             self.battlePrint = self.battlePrint + "What will you do? (attack/defend/item): "
 
     def nextTurn(self, playerTurns):
+        if not self.is_over:
+            i=0
+            for player in self.players:
+                if not player.is_alive():
+                    continue
 
-        i=0
-        for player in self.players:
-            if not player.is_alive():
-                continue
+                print(f"\n{player.name}'s turn:")
+                self.battlePrint = self.battlePrint + f"\n{player.name}'s turn:"
+                player_choice = playerTurns[i]
 
-            print(f"\n{player.name}'s turn:")
-            self.battlePrint = self.battlePrint + f"\n{player.name}'s turn:"
-            player_choice = playerTurns[i]
+                if player_choice == "attack":
+                    attackPrint = player.attack_enemy(self.monster)
+                    self.battlePrint = self.battlePrint + attackPrint
 
-            if player_choice == "attack":
-                attackPrint = player.attack_enemy(self.monster)
-                self.battlePrint = self.battlePrint + attackPrint
+                elif player_choice == "defend":
+                    print(f"{player.name} defends!")
+                    self.battlePrint = self.battlePrint + f"{player.name} defends!"
+                    player.defend()
 
-            elif player_choice == "defend":
-                print(f"{player.name} defends!")
-                self.battlePrint = self.battlePrint + f"{player.name} defends!"
-                player.defend
+                elif player_choice == "item":
+                    print(f"{player.name} uses an item!")
+                    self.battlePrint = self.battlePrint + f"{player.name} uses an item!"
+                    # Implement item usage logic here
 
-            elif player_choice == "item":
-                print(f"{player.name} uses an item!")
-                self.battlePrint = self.battlePrint + f"{player.name} uses an item!"
-                # Implement item usage logic here
+                else:
+                    print("Invalid choice! You lose your turn.")
+                    self.battlePrint = self.battlePrint + "Invalid choice! You lose your turn."
 
-            else:
-                print("Invalid choice! You lose your turn.")
-                self.battlePrint = self.battlePrint + "Invalid choice! You lose your turn."
+                if not self.monster.is_alive():
+                    break
 
-            if not self.monster.is_alive():
-                break
+                i += 1
+            
+            # Monster's turn
+            if self.monster.is_alive():
+                print("\nMonster's turn:")
+                self.battlePrint = self.battlePrint + "\nMonster's turn:"
+                monsterAttackPrint = self.monster.attack_player(random.choice(self.players))
+                self.battlePrint = self.battlePrint + monsterAttackPrint
 
-            i += 1
+            for player in self.players:
+                player.removeDefense()
+
+            current = self.battlePrint
+            self.battlePrint = ""
+            self.battleState()
+        else:
+            print("The battle is already over!")
+            current = "The battle is already over!"
         
-         # Monster's turn
-        if self.monster.is_alive():
-            print("\nMonster's turn:")
-            self.battlePrint = self.battlePrint + "\nMonster's turn:"
-            monsterAttackPrint = self.monster.attack_player(random.choice(self.players))
-            self.battlePrint = self.battlePrint + monsterAttackPrint
-
-        for player in self.players:
-            player.defend()
-
-        current = self.battlePrint
-        self.battlePrint = ""
-        self.battleState()
         return current
 
 # def battle(players, monster):
