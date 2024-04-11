@@ -1,0 +1,4 @@
+Name;Description;Damage Multiplier;Attributes;Cost
+Fireball;Shoots a small fireball at the enemy;1,10;Fire;5
+Lightning Bolt;Zaps the enemy with the power of lightning;1,05;Lightning;10
+Icecicle;Drops an icecicle on the enemy from above;1,10;Ice;8
