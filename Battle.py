@@ -131,7 +131,7 @@ class Battle:
 
         self.moveList[player.name] = ["ability", ability]
 
-        print(f"{player.name} has selected ability")
+        print(f"{player.name} has selected {ability}")
 
         if all(player.name in self.moveList.keys() for player in self.players):
             self.executeTurn()

@@ -21,15 +21,21 @@ class Player:
 
     def useAttackAbility(self, enemy, abilityName):
         ability = self.abilities[self.abilities["Name"] == abilityName]
-        #print(ability)
+        #print(ability["Attributes"].item(), enemy.weaknesses, any(weakness==ability["Attributes"].item() for weakness in enemy.weaknesses))
+        if ability["Cost"].item() > self.mp:
+            return "You don't have enough MP! Choose another ability!"
+        self.mp -= ability["Cost"].item()
 
-        if any(weakness in ability["Attributes"] for weakness in enemy.weaknesses):
+        if any(weakness==ability["Attributes"].item() for weakness in enemy.weaknesses):
             damage = random.randint(self.attack - 5, self.attack + 5) * float(ability["Damage Multiplier"].iloc[0]) * 1.5
+            enemy.take_damage(damage)
+            return f"{self.name} uses {abilityName}! {self.name} deals {damage} critical damage to {enemy.name}! {enemy.name} is weak to {ability['Attributes'].item()}!"
         else:
             damage = random.randint(self.attack - 5, self.attack + 5) * float(ability["Damage Multiplier"].iloc[0])
+            enemy.take_damage(damage)
+            return f"{self.name} uses {abilityName}! {self.name} deals {damage} damage to {enemy.name}!"
 
-        enemy.take_damage(damage)
-        print(f"{self.name} uses {abilityName}! {self.name} deals {damage} damage to {enemy.name}!")
+        #print(f"{self.name} uses {abilityName}! {self.name} deals {damage} damage to {enemy.name}!")
         return f"{self.name} uses {abilityName}! {self.name} deals {damage} damage to {enemy.name}!"
         
     def take_damage(self, damage):
