@@ -21,6 +21,7 @@ class Player:
 
     def useAttackAbility(self, enemy, abilityName):
         ability = self.abilities[self.abilities["Name"] == abilityName]
+        #print(ability)
         #print(ability["Attributes"].item(), enemy.weaknesses, any(weakness==ability["Attributes"].item() for weakness in enemy.weaknesses))
         if ability["Cost"].item() > self.mp:
             return "You don't have enough MP! Choose another ability!"

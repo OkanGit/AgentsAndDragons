@@ -142,33 +142,34 @@ class Battle:
         if not self.is_over:
             for player in self.players:
                 
-                move = self.moveList[player.name]
+                if player.is_alive():
+                    move = self.moveList[player.name]
 
-                if not player.is_alive():
-                    continue
-                
-                if not self.monster.is_alive():
-                    break
-                #print(f"\n{player.name}'s turn:")
-                self.battlePrint = self.battlePrint + f"\n{player.name}'s turn:"
-
-                if type(move) == str:
-                    if move == "attack":
-                        attackPrint = player.attack_enemy(self.monster)
-                        self.battlePrint = self.battlePrint + attackPrint
-
-                    elif move == "defend":
-                        #print(f"{player.name} defends!")
-                        self.battlePrint = self.battlePrint + f"{player.name} defends!"
-                        player.defend()
-
-                else:
-                    if move[0] == "ability":
-                        
-                        #print(f"\n{player.name} uses {move[1]}!")
-                        attackPrint = player.useAttackAbility(self.monster, move[1])
-                        self.battlePrint = self.battlePrint + attackPrint
+                    if not player.is_alive():
+                        continue
+                    
+                    if not self.monster.is_alive():
                         break
+                    #print(f"\n{player.name}'s turn:")
+                    self.battlePrint = self.battlePrint + f"\n{player.name}'s turn:"
+
+                    if type(move) == str:
+                        if move == "attack":
+                            attackPrint = player.attack_enemy(self.monster)
+                            self.battlePrint = self.battlePrint + attackPrint
+
+                        elif move == "defend":
+                            #print(f"{player.name} defends!")
+                            self.battlePrint = self.battlePrint + f"{player.name} defends!"
+                            player.defend()
+
+                    else:
+                        if move[0] == "ability":
+                            
+                            #print(f"\n{player.name} uses {move[1]}!")
+                            attackPrint = player.useAttackAbility(self.monster, move[1])
+                            self.battlePrint = self.battlePrint + attackPrint
+                            break
 
             
             # Monster's turn
@@ -188,6 +189,10 @@ class Battle:
             print("The battle is already over!")
             current = "The battle is already over!"
        
+        if all(not player.is_alive() for player in self.players):
+            self.battlePrint = "Defeat! Every player has fainted!"
+            self.is_over = True
+
         self.moveList = {}
         print("Turn executed")
 

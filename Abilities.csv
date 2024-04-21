@@ -2,3 +2,6 @@ Name;Description;Damage Multiplier;Attributes;Cost
 Fireball;Shoots a small fireball at the enemy;1,10;Fire;5
 Lightning Bolt;Zaps the enemy with the power of lightning;1,05;Lightning;10
 Icecicle;Drops an icecicle on the enemy from above;1,10;Ice;8
+Dark Obliteration;Conjures shadows to crush foes, inflicting heavy damage.;2,00;Dark;30
+Inferno;Engulfs enemies in flames, causing widespread damage.;1,50;Fire;20
+Magic Explosion;Creates a huge explosion using the full power of the user's magic.;2,50;Light;50
